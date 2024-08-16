@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery Store</title>
+    <title>Interactive Grocery Store</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,6 +25,33 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-section, .discount-section {
+            margin-bottom: 20px;
+        }
+
+        .login-section input[type="text"], .login-section input[type="password"], 
+        form input[type="text"], form input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .login-section button, form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            flex: 0 0 100%;
+        }
+
+        .login-section button:hover, form button:hover {
+            background-color: #45a049;
         }
 
         .item-list {
@@ -63,40 +90,55 @@
             background-color: #e53e3e;
         }
 
-        form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .discount-section ul {
+            list-style-type: none;
+            padding: 0;
         }
 
-        form input[type="text"], form input[type="number"] {
-            flex: 1;
+        .discount-section ul li {
+            background: #dff0d8;
+            margin: 5px 0;
             padding: 10px;
-            border: 1px solid #ddd;
             border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        form button {
-            flex: 0 0 100%;
-            background-color: #4CAF50;
+        .discount-section ul li span {
+            font-weight: bold;
+        }
+
+        .discount-section button {
+            background-color: #5bc0de;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 5px 10px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
         }
 
-        form button:hover {
-            background-color: #45a049;
+        .discount-section button:hover {
+            background-color: #31b0d5;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>Grocery Store</h1>
+        <h1>Interactive Grocery Store</h1>
 
+        <!-- Authentication Section -->
+        <div class="login-section">
+            <h2>Owner Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <!-- Items Section -->
         <div class="item-list">
             <h2>Items Available:</h2>
             <ul id="items">
@@ -106,14 +148,49 @@
             </ul>
         </div>
 
-        <form id="itemForm">
+        <!-- Add Item Form -->
+        <form id="itemForm" style="display:none;">
             <input type="text" id="itemName" placeholder="Item Name" required>
             <input type="number" id="itemPrice" placeholder="Item Price" required>
             <button type="submit">Add Item</button>
         </form>
+
+        <!-- Discounts Section -->
+        <div class="discount-section">
+            <h2>Discounts:</h2>
+            <ul id="discounts">
+                <li><span>10% off on all Apples</span> <button onclick="removeDiscount(this)">Remove</button></li>
+                <li><span>Buy 1 Get 1 Free on Bananas</span> <button onclick="removeDiscount(this)">Remove</button></li>
+            </ul>
+        </div>
+
+        <!-- Add Discount Form -->
+        <form id="discountForm" style="display:none;">
+            <input type="text" id="discountDescription" placeholder="Discount Description" required>
+            <button type="submit">Add Discount</button>
+        </form>
     </div>
 
     <script>
+        // Authentication Functionality
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'admin' && password === 'password') {
+                alert('Login successful!');
+                document.getElementById('itemForm').style.display = 'block';
+                document.getElementById('discountForm').style.display = 'block';
+            } else {
+                alert('Invalid credentials, please try again.');
+            }
+
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+
+        // Add Item Functionality
         document.getElementById('itemForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const itemName = document.getElementById('itemName').value;
@@ -130,8 +207,29 @@
             }
         });
 
+        // Remove Item Functionality
         function removeItem(button) {
             button.parentElement.parentElement.remove();
+        }
+
+        // Add Discount Functionality
+        document.getElementById('discountForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const discountDescription = document.getElementById('discountDescription').value;
+
+            if (discountDescription) {
+                const discountList = document.getElementById('discounts');
+                const newDiscount = document.createElement('li');
+                newDiscount.innerHTML = `<span>${discountDescription}</span> <button onclick="removeDiscount(this)">Remove</button>`;
+                discountList.appendChild(newDiscount);
+
+                document.getElementById('discountDescription').value = '';
+            }
+        });
+
+        // Remove Discount Functionality
+        function removeDiscount(button) {
+            button.parentElement.remove();
         }
     </script>
 </body>
